@@ -128,7 +128,6 @@ public:
     void setSmooth();
     void setBlending();
     void setMaterial();
-    osg::MatrixTransform* start();
     virtual ~myModel() {}
 
 private:
@@ -160,7 +159,7 @@ void myModel::setBlending()
     _blendFunc = new osg::BlendFunc;
     _stateset = _model->getOrCreateStateSet();
     _blendFunc->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    _stateset->setAttributeAndModes( _blendFunc );
+    _stateset->setAttributeAndModes( osg::BlendFunc );
 }
 void myModel::setMaterial()
 {
@@ -169,46 +168,45 @@ void myModel::setMaterial()
     _nodeMaterial->setDiffuse( osg::Material::FRONT, osg::Vec4(0.5f,0.5f,0.5f,1.0f));
     _nodeMaterial->setAmbient( osg::Material::FRONT, osg::Vec4(2.0f,0.0f,0.0f,1.0f) );
     _nodeMaterial->setTransparency(osg::Material::FRONT , 0.25f);
-    _nodess->setAttribute( _nodeMaterial.get() );
+    _nodess->setAttribute( nodeMaterial.get() );
 }
-osg::MatrixTransform* myModel::start()
-{
-    myModel::getMatrix();
-    myModel::setSmooth();
-    myModel::setBlending();
-    myModel::setMaterial();
-    return _mt;
-}
-
-
-class myCamera{
-public:
-    myCamera() : _camera( new osg::Camera ) {}
-    osg::Camera* setCamera();
-
-protected:
-    osg::ref_ptr<osg::Camera> _camera;
-};
-osg::Camera* myCamera::setCamera()
-{
-    _camera->setClearMask( GL_DEPTH_BUFFER_BIT );
-    _camera->setRenderOrder( osg::Camera::POST_RENDER );
-    _camera->setReferenceFrame( osg::Camera::ABSOLUTE_RF );
-    _camera->setViewMatrixAsLookAt( osg::Vec3d(-1.0f,0.0f,0.0f) , osg::Vec3d(0.0,0.0,0.0) , osg::Vec3d(0.0f,1.0f,0.0f) );
-    return _camera;
-}
-
-
 
 int main()
 {
     using namespace osg;
+//    // read Neuron Obj file from desk
+//    ref_ptr<Node> model = osgDB::readNodeFile( "Neuron.obj" );
+//    model->setName("Neuron");
+    ref_ptr<MatrixTransform> mt = new MatrixTransform;
+//    mt->addChild( model.get() );
     myModel model1 ("Neuron.obj","Neuron");
-    ref_ptr<MatrixTransform> mt = model1.getMatrix();
+    mt = model1.getMatrix();
+
+
+    osgUtil::SmoothingVisitor sv;
+    model->accept( sv );
+
+    // BlendFunc
+    ref_ptr<BlendFunc> blendFunc = new BlendFunc;
+    blendFunc->setFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    StateSet* stateset = model->getOrCreateStateSet();
+    stateset->setAttributeAndModes( blendFunc );
+
+    // Material
+    ref_ptr<StateSet> nodess =  model->getOrCreateStateSet();
+    ref_ptr<Material> nodeMaterial = new Material;
+    nodeMaterial->setDiffuse( Material::FRONT   , Vec4(0.5f,0.5f,0.5f,1.0f));
+    nodeMaterial->setAmbient( Material::FRONT   , Vec4(2.0f,0.0f,0.0f,1.0f) );
+    nodeMaterial->setTransparency(Material::FRONT , 0.25f);
+    //nodeMaterial->setAlpha( Material::FRONT , 0.5f );
+    nodess->setAttribute( nodeMaterial.get() );
 
     // create camera
-    myCamera dCamera;
-    osg::ref_ptr<osg::Camera> camera = dCamera.setCamera();
+    ref_ptr<Camera> camera = new Camera();
+    camera->setClearMask( GL_DEPTH_BUFFER_BIT );
+    camera->setRenderOrder( Camera::POST_RENDER );
+    camera->setReferenceFrame( Camera::ABSOLUTE_RF );
+    camera->setViewMatrixAsLookAt( Vec3d(-1.0f,0.0f,0.0f) , Vec3d(0.0,0.0,0.0) , Vec3d(0.0f,1.0f,0.0f) );
 
     // create root node
     ref_ptr<Group> root = new Group;
@@ -219,12 +217,12 @@ int main()
     ref_ptr<PickHandler> picker = new PickHandler;
     root->addChild( picker->getOrCreateSelectionBox() );
 
-    //ref_ptr<ModelController> ctrler = new ModelController( mt.get() );
+    ref_ptr<ModelController> ctrler = new ModelController( mt.get() );
 
     // create viewer to display data
     osgViewer::Viewer viewer;
     viewer.addEventHandler( picker.get() );
-    //viewer.addEventHandler( ctrler.get() );
+    viewer.addEventHandler( ctrler.get() );
     viewer.setSceneData( root.get() );
     return viewer.run();
 }

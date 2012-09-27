@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/testing.dir/main.cpp.o  -o testing -rdynamic /usr/local/lib64/libOpenThreads.so /usr/local/lib64/libosg.so /usr/local/lib64/libosgDB.so /usr/local/lib64/libosgUtil.so /usr/local/lib64/libosgGA.so /usr/local/lib64/libosgText.so /usr/local/lib64/libosgViewer.so -Wl,-rpath,/usr/local/lib64 

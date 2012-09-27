@@ -28,4 +28,3 @@ config_project( testing OSGUTIL )
 config_project( testing OSGGA )
 config_project( testing OSGTEXT )
 config_project( testing OSGVIEWER )
-
