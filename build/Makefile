@@ -35,14 +35,17 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# Escaping for special characters.
+EQUALS = =
+
 # The program to use to edit the cache.
 CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/maya/Documents/testing
+CMAKE_SOURCE_DIR = /home/ahmed/Documents/testing
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/maya/Documents/testing/build
+CMAKE_BINARY_DIR = /home/ahmed/Documents/testing/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -69,9 +72,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/maya/Documents/testing/build/CMakeFiles /home/maya/Documents/testing/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ahmed/Documents/testing/build/CMakeFiles /home/ahmed/Documents/testing/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/maya/Documents/testing/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ahmed/Documents/testing/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -99,6 +102,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named math
+
+# Build rule for target.
+math: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 math
+.PHONY : math
+
+# fast build rule for target.
+math/fast:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/build
+.PHONY : math/fast
+
+#=============================================================================
 # Target rules for targets named testing
 
 # Build rule for target.
@@ -110,6 +126,78 @@ testing: cmake_check_build_system
 testing/fast:
 	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/build
 .PHONY : testing/fast
+
+camera.o: camera.cpp.o
+.PHONY : camera.o
+
+# target to build an object file
+camera.cpp.o:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/camera.cpp.o
+.PHONY : camera.cpp.o
+
+camera.i: camera.cpp.i
+.PHONY : camera.i
+
+# target to preprocess a source file
+camera.cpp.i:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/camera.cpp.i
+.PHONY : camera.cpp.i
+
+camera.s: camera.cpp.s
+.PHONY : camera.s
+
+# target to generate assembly for a file
+camera.cpp.s:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/camera.cpp.s
+.PHONY : camera.cpp.s
+
+common/CommonFunctions.o: common/CommonFunctions.cpp.o
+.PHONY : common/CommonFunctions.o
+
+# target to build an object file
+common/CommonFunctions.cpp.o:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/common/CommonFunctions.cpp.o
+.PHONY : common/CommonFunctions.cpp.o
+
+common/CommonFunctions.i: common/CommonFunctions.cpp.i
+.PHONY : common/CommonFunctions.i
+
+# target to preprocess a source file
+common/CommonFunctions.cpp.i:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/common/CommonFunctions.cpp.i
+.PHONY : common/CommonFunctions.cpp.i
+
+common/CommonFunctions.s: common/CommonFunctions.cpp.s
+.PHONY : common/CommonFunctions.s
+
+# target to generate assembly for a file
+common/CommonFunctions.cpp.s:
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/common/CommonFunctions.cpp.s
+.PHONY : common/CommonFunctions.cpp.s
+
+light.o: light.cpp.o
+.PHONY : light.o
+
+# target to build an object file
+light.cpp.o:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/light.cpp.o
+.PHONY : light.cpp.o
+
+light.i: light.cpp.i
+.PHONY : light.i
+
+# target to preprocess a source file
+light.cpp.i:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/light.cpp.i
+.PHONY : light.cpp.i
+
+light.s: light.cpp.s
+.PHONY : light.s
+
+# target to generate assembly for a file
+light.cpp.s:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/light.cpp.s
+.PHONY : light.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -135,6 +223,54 @@ main.cpp.s:
 	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+scene.o: scene.cpp.o
+.PHONY : scene.o
+
+# target to build an object file
+scene.cpp.o:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/scene.cpp.o
+.PHONY : scene.cpp.o
+
+scene.i: scene.cpp.i
+.PHONY : scene.i
+
+# target to preprocess a source file
+scene.cpp.i:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/scene.cpp.i
+.PHONY : scene.cpp.i
+
+scene.s: scene.cpp.s
+.PHONY : scene.s
+
+# target to generate assembly for a file
+scene.cpp.s:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/scene.cpp.s
+.PHONY : scene.cpp.s
+
+shader.o: shader.cpp.o
+.PHONY : shader.o
+
+# target to build an object file
+shader.cpp.o:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/shader.cpp.o
+.PHONY : shader.cpp.o
+
+shader.i: shader.cpp.i
+.PHONY : shader.i
+
+# target to preprocess a source file
+shader.cpp.i:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/shader.cpp.i
+.PHONY : shader.cpp.i
+
+shader.s: shader.cpp.s
+.PHONY : shader.s
+
+# target to generate assembly for a file
+shader.cpp.s:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/shader.cpp.s
+.PHONY : shader.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -142,11 +278,27 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... math"
 	@echo "... rebuild_cache"
 	@echo "... testing"
+	@echo "... camera.o"
+	@echo "... camera.i"
+	@echo "... camera.s"
+	@echo "... common/CommonFunctions.o"
+	@echo "... common/CommonFunctions.i"
+	@echo "... common/CommonFunctions.s"
+	@echo "... light.o"
+	@echo "... light.i"
+	@echo "... light.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... scene.o"
+	@echo "... scene.i"
+	@echo "... scene.s"
+	@echo "... shader.o"
+	@echo "... shader.i"
+	@echo "... shader.s"
 .PHONY : help
 
 

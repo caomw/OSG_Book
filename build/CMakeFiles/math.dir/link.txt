@@ -1,0 +1,2 @@
+/usr/bin/ar cr libmath.a  CMakeFiles/math.dir/scene.cpp.o CMakeFiles/math.dir/light.cpp.o CMakeFiles/math.dir/shader.cpp.o CMakeFiles/math.dir/camera.cpp.o
+/usr/bin/ranlib libmath.a

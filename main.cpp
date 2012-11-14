@@ -1,230 +1,222 @@
-#include <iostream>
-#include <osg/MatrixTransform>
+#include <osg/Geometry>
+#include <osg/Geode>
 #include <osg/ShapeDrawable>
-#include <osg/PolygonMode>
-#include <osgDB/ReadFile>
-#include <osg/BlendFunc>
-#include <osg/Camera>
-#include <osg/Material>
-#include <osgGA/GUIEventHandler>
-#include <osgUtil/LineSegmentIntersector>
-#include <osgViewer/Viewer>
 #include <osgUtil/SmoothingVisitor>
+#include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
+#include <osgUtil/PrintVisitor>
+#include <iostream>
+#include <osg/Group>
+#include <osg/NodeVisitor>
 
+// including my ca
+#include "scene.h"
+#include "light.h"
+#include "camera.h"
+#include "shader.h"
 
-
-class ModelController : public osgGA::GUIEventHandler
+osg::Group* createLightGroup(osg::Group* root,int num,osg::Vec4Array* pos)
 {
-public:
-    ModelController( osg::MatrixTransform* node ) : _model(node) {}
-    ModelController( osg::Camera* cam) : _cam(cam) {}
+    osg::LightSource* lightsource[8];
+    osg::Light* myLight[8];
+    osg::ref_ptr<osg::Group> lightGrp = new osg::Group;
+    osg::ref_ptr<osg::StateSet> lightss = root->getOrCreateStateSet();
 
-    virtual bool handle( const osgGA::GUIEventAdapter&  ea,
-                               osgGA::GUIActionAdapter& aa );
+    osg::ref_ptr<osg::Geode> lightMarkerGeode (new osg::Geode);
 
-protected:
-    osg::ref_ptr<osg::MatrixTransform> _model;
-    osg::ref_ptr<osg::Camera> _cam;
-};
-
-bool ModelController::handle(const osgGA::GUIEventAdapter &ea,
-                                   osgGA::GUIActionAdapter &aa)
-{
-    if ( !_model ) return false;
-    osg::Matrix matrix = _model->getMatrix();
-
-    switch ( ea.getEventType() )
+    for(int i = 0 ; i < num ; i++)
     {
-        case osgGA::GUIEventAdapter::KEYDOWN:
-        switch ( ea.getKey() )
-        {
-        case 'a': case 'A':
-            matrix *= osg::Matrix::rotate( -0.1f, osg::Z_AXIS );
-            break;
-        case 'd': case 'D':
-            matrix *= osg::Matrix::rotate(  0.1f, osg::Z_AXIS );
-            break;
-        case 'w': case 'W':
-            matrix *= osg::Matrix::rotate( -0.1f, osg::X_AXIS );
-            break;
-        case 's': case 'S':
-            matrix *= osg::Matrix::rotate(  0.1f, osg::X_AXIS );
-            break;
-        default:
-            break;
-        }
-        _model->setMatrix( matrix );
-        break;
-    default:
-        break;
+    lightsource[i] = new osg::LightSource;
+
+    myLight[i] = new osg::Light(i);
+    myLight[i]->setPosition((*pos)[i]);
+    //myLight[i]->setDiffuse((*pos)[i+2]);
+    myLight[i]->setConstantAttenuation(1.0);
+
+    lightsource[i]->setLight(myLight[i]);
+    lightsource[i]->setLocalStateSetModes(osg::StateAttribute::ON);
+    lightsource[i]->setStateSetModes(*lightss,osg::StateAttribute::ON);
+
+    lightGrp->addChild(lightsource[i]);
+    lightMarkerGeode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3f((*pos)[i][0],(*pos)[i][1],(*pos)[i][2]),0.5f)));
     }
-    return false;
+    lightGrp->addChild(lightMarkerGeode.get());
+    return lightGrp.release();
 }
 
-class PickHandler : public osgGA::GUIEventHandler
-{
-public:
-    osg::Node* getOrCreateSelectionBox()
-    {
-        if ( !_selectionBox )
-        {
-            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-            geode->addDrawable(
-                new osg::ShapeDrawable(new osg::Box(osg::Vec3(), 1.0f)) );
+class  CcolorVisitor : public osg::NodeVisitor {
+public :
+    CcolorVisitor() : NodeVisitor( NodeVisitor::TRAVERSE_ALL_CHILDREN ) {
+    // ---------------------------------------------------------------
+    //
+    // Default Ctors overide the default node visitor mode so all
+    // children are visited
+    //
+    // ---------------------------------------------------------------
+        //
+        // Default to a white color
+        //
+        m_color.set( 1.0, 1.0, 1.0, 1.0 );
+        m_colorArrays = new osg::Vec4Array;
+        m_colorArrays->push_back( m_color );
+        };
 
-            _selectionBox = new osg::MatrixTransform;
-            _selectionBox->setNodeMask( 0x1 );
-            _selectionBox->addChild( geode.get() );
+    CcolorVisitor( const osg::Vec4 &color ) : NodeVisitor( NodeVisitor::TRAVERSE_ALL_CHILDREN ) {
+    // -------------------------------------------------------------------
+    //
+    // Overloaded Ctor initialised with the Color
+    // Also override the visitor to traverse all the nodes children
+    //
+    // -------------------------------------------------------------------
+        m_color = m_color;
+        m_colorArrays = new osg::Vec4Array;
+        m_colorArrays->push_back( m_color );
+    };
 
-            osg::StateSet* ss = _selectionBox->getOrCreateStateSet();
-            ss->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-            ss->setAttributeAndModes( new osg::PolygonMode(
-                osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE) );
-        }
-        return _selectionBox.get();
-    }
+    virtual ~CcolorVisitor(){};
 
-    virtual bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
-    {
-        if ( ea.getEventType()!=osgGA::GUIEventAdapter::RELEASE ||
-             ea.getButton()!=osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON ||
-             !(ea.getModKeyMask()&osgGA::GUIEventAdapter::MODKEY_CTRL) )
-            return false;
+    virtual void apply ( osg::Node &node ){
+    // --------------------------------------------
+    //
+    //  Handle traversal of osg::Node node types
+    //
+    // --------------------------------------------
+    traverse( node );
+    } // apply( osg::Node &node )
 
-        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
-        if ( viewer )
-        {
-            osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector =
-                new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, ea.getX(), ea.getY());
-            osgUtil::IntersectionVisitor iv( intersector.get() );
-            iv.setTraversalMask( ~0x1 );
-            viewer->getCamera()->accept( iv );
+    virtual void apply( osg::Geode &geode ){
+    // ------------------------------------------------
+    //
+    //  Handle traversal of osg::Geode node types
+    //
+    // ------------------------------------------------
+    osg::StateSet *state   = NULL;
+    unsigned int    vertNum = 0;
+    //
+    //  We need to iterate through all the drawables check if
+    //  the contain any geometry that we will need to process
+    //
+    unsigned int numGeoms = geode.getNumDrawables();
 
-            if ( intersector->containsIntersections() )
-            {
-                const osgUtil::LineSegmentIntersector::Intersection& result =
-                    *(intersector->getIntersections().begin());
-
-                osg::BoundingBox bb = result.drawable->getBound();
-                osg::Vec3 worldCenter = bb.center() * osg::computeLocalToWorld(result.nodePath);
-                _selectionBox->setMatrix(
-                    osg::Matrix::scale(bb.xMax()-bb.xMin(), bb.yMax()-bb.yMin(), bb.zMax()-bb.zMin()) *
-                    osg::Matrix::translate(worldCenter) );
+    for( unsigned int geodeIdx = 0; geodeIdx < numGeoms; geodeIdx++ ) {
+        //
+        // Use 'asGeometry' as its supposed to be faster than a dynamic_cast
+        // every little saving counts
+        //
+       osg::Geometry *curGeom = geode.getDrawable( geodeIdx )->asGeometry();
+        //
+        // Only process if the drawable is geometry
+        //
+        if ( curGeom ) {
+           osg::Vec4Array *colorArrays = dynamic_cast< osg::Vec4Array *>(curGeom->getColorArray());
+           if ( colorArrays ) {
+               for ( unsigned int i = 0; i < colorArrays->size(); i++ ) {
+                    osg::Vec4 *color = &colorArrays->operator [](i);
+                    //
+                    // could also use *color = m_color
+                    //
+                    color->set( m_color._v[0], m_color._v[1], m_color._v[2], m_color._v[3]);
+                    }
+                }
+                else{
+                    curGeom->setColorArray( m_colorArrays.get());
+                    curGeom->setColorBinding( osg::Geometry::BIND_OVERALL );
+                    }
+                }
             }
-        }
-        return false;
+    } // apply( osg::Geode
+
+    void setColor( const float r, const float g, const float b, const float a = 1.0f ){
+    // -------------------------------------------------------------------
+    //
+    // Set the color to change apply to the nodes geometry
+    //
+    // -------------------------------------------------------------------
+        osg::Vec4 *c = &m_colorArrays->operator []( 0 );
+        m_color.set( r,g,b,a );
+        *c = m_color;
+       } // setColor( r,g,b,a )
+
+    void setColor( const osg::Vec4 &color  ){
+    // -------------------------------------------------------------------
+    //
+    // Set the color to change apply to the nodes geometry
+    //
+    // -------------------------------------------------------------------
+        osg::Vec4 *c = &m_colorArrays->operator []( 0 );
+        m_color = color;
+        *c = m_color;
+       } // setColor( vec4 )
+
+
+private :
+    osg::Vec4 m_color;
+    osg::ref_ptr< osg::Vec4Array > m_colorArrays;
+ }; // class CcolorVisitor
+
+
+osg::ref_ptr<osg::Geometry> geom ;
+
+class InfoVisitor : public osg::NodeVisitor
+{
+public:
+    InfoVisitor():_level (0)
+    { setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);}
+    std::string spaces()
+    {
+        return std::string(_level*2 ,' ' );
+    }
+    virtual void apply( osg::Node& node );
+    virtual void apply( osg::Geode& geode );
+protected:
+    unsigned int _level ;
+};
+
+void InfoVisitor::apply( osg::Node& node )
+{
+    std::cout << spaces() << node.libraryName() << ": :"
+    << node.className() << std::endl ;
+
+    _level++;
+    traverse( node );
+    _level--;
+}
+
+void InfoVisitor::apply( osg::Geode& geode ){
+    std::cout << spaces() << geode.libraryName() << "::"
+                 << geode.className() << std::endl;
+    _level++;
+    for ( unsigned int i = 0 ; i < geode.getNumDrawables() ; ++i )
+    {
+        osg::Drawable* drawable = geode.getDrawable(i);
+        std::cout << spaces() << drawable->libraryName() << "::"
+                     << drawable->className() << std::endl;
+        geom = drawable->asGeometry();
     }
 
-protected:
-    osg::ref_ptr<osg::MatrixTransform> _selectionBox;
-};
-
-
-class myModel{
-public:
-    myModel( std::string  modelName , std::string name ) {  _model = osgDB::readNodeFile(modelName);
-                                                            _model->setName(name);}
-    osg::ref_ptr<osg::MatrixTransform> getMatrix ();
-    void setSmooth();
-    void setBlending();
-    void setMaterial();
-    osg::MatrixTransform* start();
-    virtual ~myModel() {}
-
-private:
-    osg::ref_ptr<osg::Node>             _model;
-    osg::ref_ptr<osg::MatrixTransform>  _mt ;
-    osgUtil::SmoothingVisitor           _sv;
-    osg::StateSet*                      _stateset;
-    osg::ref_ptr<osg::BlendFunc>        _blendFunc;
-    osg::ref_ptr<osg::StateSet>         _nodess;
-    osg::ref_ptr<osg::Material>         _nodeMaterial;
-    osg::ref_ptr<osg::Group>            _root;
-    osg::ref_ptr<PickHandler>           _picker;
-    osg::ref_ptr<ModelController>       _ctrler;
-    osgViewer::Viewer                   _viewer;
-
-};
-osg::ref_ptr<osg::MatrixTransform> myModel::getMatrix()
-{
-    _mt =  new osg::MatrixTransform;
-    _mt->addChild( _model.get() );
-    return _mt;
-}
-void myModel::setSmooth()
-{
-    _model->accept( _sv );
-}
-void myModel::setBlending()
-{
-    _blendFunc = new osg::BlendFunc;
-    _stateset = _model->getOrCreateStateSet();
-    _blendFunc->setFunction(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    _stateset->setAttributeAndModes( _blendFunc );
-}
-void myModel::setMaterial()
-{
-    _nodess = _model->getOrCreateStateSet();
-    _nodeMaterial = new osg::Material;
-    _nodeMaterial->setDiffuse( osg::Material::FRONT, osg::Vec4(0.5f,0.5f,0.5f,1.0f));
-    _nodeMaterial->setAmbient( osg::Material::FRONT, osg::Vec4(2.0f,0.0f,0.0f,1.0f) );
-    _nodeMaterial->setTransparency(osg::Material::FRONT , 0.25f);
-    _nodess->setAttribute( _nodeMaterial.get() );
-}
-osg::MatrixTransform* myModel::start()
-{
-    myModel::getMatrix();
-    myModel::setSmooth();
-    myModel::setBlending();
-    myModel::setMaterial();
-    return _mt;
-}
-
-
-class myCamera{
-public:
-    myCamera() : _camera( new osg::Camera ) {}
-    osg::Camera* setCamera();
-
-protected:
-    osg::ref_ptr<osg::Camera> _camera;
-};
-osg::Camera* myCamera::setCamera()
-{
-    _camera->setClearMask( GL_DEPTH_BUFFER_BIT );
-    _camera->setRenderOrder( osg::Camera::POST_RENDER );
-    _camera->setReferenceFrame( osg::Camera::ABSOLUTE_RF );
-    _camera->setViewMatrixAsLookAt( osg::Vec3d(-1.0f,0.0f,0.0f) , osg::Vec3d(0.0,0.0,0.0) , osg::Vec3d(0.0f,1.0f,0.0f) );
-    return _camera;
+    traverse( geode );
+    _level--;
 }
 
 
 
-int main()
+int main( int argc, char** argv )
 {
     using namespace osg;
-    myModel model1 ("Neuron.obj","Neuron");
-    ref_ptr<MatrixTransform> mt = model1.getMatrix();
-
-    // create camera
-    myCamera dCamera;
-    osg::ref_ptr<osg::Camera> camera = dCamera.setCamera();
-
-    // create root node
-    ref_ptr<Group> root = new Group;
-    // add child to it
-    root->addChild( mt.get() );
-    root->addChild( camera.get() );
-
-    ref_ptr<PickHandler> picker = new PickHandler;
-    root->addChild( picker->getOrCreateSelectionBox() );
-
-    //ref_ptr<ModelController> ctrler = new ModelController( mt.get() );
-
     // create viewer to display data
     osgViewer::Viewer viewer;
-    viewer.addEventHandler( picker.get() );
-    //viewer.addEventHandler( ctrler.get() );
+
+    // create object name of model which take file and name
+    scene model1 ("Neuron.obj","Neuron01");
+    model1.setMatrix(osg::Vec3( 10.0f,0.0f, 0.0f));
+    model1.start();
+
+    osg::ref_ptr<osg::Group> root = new osg::Group;
+    root->addChild( model1.getMatrix() );
+    //root->addChild(createLightGroup(root,1,pos));
+
     viewer.setSceneData( root.get() );
+    //Stats Event Handler s key
+    viewer.addEventHandler(new osgViewer::StatsHandler);
     return viewer.run();
 }

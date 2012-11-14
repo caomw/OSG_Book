@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/ahmed/Documents/testing/scene.cpp
+scene.h
+/home/ahmed/Documents/testing/scene.h
+
+/home/ahmed/Documents/testing/scene.h
+osg/MatrixTransform
+-
+osgDB/ReadFile
+-
+osg/BlendFunc
+-
+osg/Material
+-
+osg/Program
+-
+osgGA/GUIEventHandler
+-
+osgUtil/SmoothingVisitor
+-
+osg/Camera
+-
+osgViewer/Viewer
+-
+shader.h
+/home/ahmed/Documents/testing/shader.h
+
+/home/ahmed/Documents/testing/shader.h
+osg/Program
+-
+

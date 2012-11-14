@@ -31,14 +31,17 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# Escaping for special characters.
+EQUALS = =
+
 # The program to use to edit the cache.
 CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/maya/Documents/testing
+CMAKE_SOURCE_DIR = /home/ahmed/Documents/testing
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/maya/Documents/testing/build
+CMAKE_BINARY_DIR = /home/ahmed/Documents/testing/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/testing.dir/depend.make
@@ -51,17 +54,17 @@ include CMakeFiles/testing.dir/flags.make
 
 CMakeFiles/testing.dir/main.cpp.o: CMakeFiles/testing.dir/flags.make
 CMakeFiles/testing.dir/main.cpp.o: ../main.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/maya/Documents/testing/build/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ahmed/Documents/testing/build/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/testing.dir/main.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/testing.dir/main.cpp.o -c /home/maya/Documents/testing/main.cpp
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/testing.dir/main.cpp.o -c /home/ahmed/Documents/testing/main.cpp
 
 CMakeFiles/testing.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/testing.dir/main.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/maya/Documents/testing/main.cpp > CMakeFiles/testing.dir/main.cpp.i
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ahmed/Documents/testing/main.cpp > CMakeFiles/testing.dir/main.cpp.i
 
 CMakeFiles/testing.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/testing.dir/main.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/maya/Documents/testing/main.cpp -o CMakeFiles/testing.dir/main.cpp.s
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ahmed/Documents/testing/main.cpp -o CMakeFiles/testing.dir/main.cpp.s
 
 CMakeFiles/testing.dir/main.cpp.o.requires:
 .PHONY : CMakeFiles/testing.dir/main.cpp.o.requires
@@ -72,22 +75,49 @@ CMakeFiles/testing.dir/main.cpp.o.provides: CMakeFiles/testing.dir/main.cpp.o.re
 
 CMakeFiles/testing.dir/main.cpp.o.provides.build: CMakeFiles/testing.dir/main.cpp.o
 
+CMakeFiles/testing.dir/common/CommonFunctions.cpp.o: CMakeFiles/testing.dir/flags.make
+CMakeFiles/testing.dir/common/CommonFunctions.cpp.o: ../common/CommonFunctions.cpp
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ahmed/Documents/testing/build/CMakeFiles $(CMAKE_PROGRESS_2)
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/testing.dir/common/CommonFunctions.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/testing.dir/common/CommonFunctions.cpp.o -c /home/ahmed/Documents/testing/common/CommonFunctions.cpp
+
+CMakeFiles/testing.dir/common/CommonFunctions.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/testing.dir/common/CommonFunctions.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/ahmed/Documents/testing/common/CommonFunctions.cpp > CMakeFiles/testing.dir/common/CommonFunctions.cpp.i
+
+CMakeFiles/testing.dir/common/CommonFunctions.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/testing.dir/common/CommonFunctions.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/ahmed/Documents/testing/common/CommonFunctions.cpp -o CMakeFiles/testing.dir/common/CommonFunctions.cpp.s
+
+CMakeFiles/testing.dir/common/CommonFunctions.cpp.o.requires:
+.PHONY : CMakeFiles/testing.dir/common/CommonFunctions.cpp.o.requires
+
+CMakeFiles/testing.dir/common/CommonFunctions.cpp.o.provides: CMakeFiles/testing.dir/common/CommonFunctions.cpp.o.requires
+	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/common/CommonFunctions.cpp.o.provides.build
+.PHONY : CMakeFiles/testing.dir/common/CommonFunctions.cpp.o.provides
+
+CMakeFiles/testing.dir/common/CommonFunctions.cpp.o.provides.build: CMakeFiles/testing.dir/common/CommonFunctions.cpp.o
+
 # Object files for target testing
 testing_OBJECTS = \
-"CMakeFiles/testing.dir/main.cpp.o"
+"CMakeFiles/testing.dir/main.cpp.o" \
+"CMakeFiles/testing.dir/common/CommonFunctions.cpp.o"
 
 # External object files for target testing
 testing_EXTERNAL_OBJECTS =
 
 testing: CMakeFiles/testing.dir/main.cpp.o
-testing: /usr/local/lib64/libOpenThreads.so
-testing: /usr/local/lib64/libosg.so
-testing: /usr/local/lib64/libosgDB.so
-testing: /usr/local/lib64/libosgUtil.so
-testing: /usr/local/lib64/libosgGA.so
-testing: /usr/local/lib64/libosgText.so
-testing: /usr/local/lib64/libosgViewer.so
+testing: CMakeFiles/testing.dir/common/CommonFunctions.cpp.o
 testing: CMakeFiles/testing.dir/build.make
+testing: /usr/lib/libOpenThreads.so
+testing: /usr/lib/libosg.so
+testing: /usr/lib/libosgDB.so
+testing: /usr/lib/libosgShadow.so
+testing: /usr/lib/libosgUtil.so
+testing: /usr/lib/libosgGA.so
+testing: /usr/lib/libosgText.so
+testing: /usr/lib/libosgViewer.so
+testing: libmath.a
 testing: CMakeFiles/testing.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable testing"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/testing.dir/link.txt --verbose=$(VERBOSE)
@@ -97,6 +127,7 @@ CMakeFiles/testing.dir/build: testing
 .PHONY : CMakeFiles/testing.dir/build
 
 CMakeFiles/testing.dir/requires: CMakeFiles/testing.dir/main.cpp.o.requires
+CMakeFiles/testing.dir/requires: CMakeFiles/testing.dir/common/CommonFunctions.cpp.o.requires
 .PHONY : CMakeFiles/testing.dir/requires
 
 CMakeFiles/testing.dir/clean:
@@ -104,6 +135,6 @@ CMakeFiles/testing.dir/clean:
 .PHONY : CMakeFiles/testing.dir/clean
 
 CMakeFiles/testing.dir/depend:
-	cd /home/maya/Documents/testing/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/maya/Documents/testing /home/maya/Documents/testing /home/maya/Documents/testing/build /home/maya/Documents/testing/build /home/maya/Documents/testing/build/CMakeFiles/testing.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/ahmed/Documents/testing/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ahmed/Documents/testing /home/ahmed/Documents/testing /home/ahmed/Documents/testing/build /home/ahmed/Documents/testing/build /home/ahmed/Documents/testing/build/CMakeFiles/testing.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/testing.dir/depend
 

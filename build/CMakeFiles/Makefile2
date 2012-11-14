@@ -43,23 +43,61 @@ CMAKE_COMMAND = /usr/bin/cmake
 # The command to remove a file.
 RM = /usr/bin/cmake -E remove -f
 
+# Escaping for special characters.
+EQUALS = =
+
 # The program to use to edit the cache.
 CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/maya/Documents/testing
+CMAKE_SOURCE_DIR = /home/ahmed/Documents/testing
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/maya/Documents/testing/build
+CMAKE_BINARY_DIR = /home/ahmed/Documents/testing/build
+
+#=============================================================================
+# Target rules for target CMakeFiles/math.dir
+
+# All Build rule for target.
+CMakeFiles/math.dir/all:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/depend
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/build
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ahmed/Documents/testing/build/CMakeFiles  1 2 3 4
+	@echo "Built target math"
+.PHONY : CMakeFiles/math.dir/all
+
+# Include target in all.
+all: CMakeFiles/math.dir/all
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/math.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ahmed/Documents/testing/build/CMakeFiles 4
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/math.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ahmed/Documents/testing/build/CMakeFiles 0
+.PHONY : CMakeFiles/math.dir/rule
+
+# Convenience name for target.
+math: CMakeFiles/math.dir/rule
+.PHONY : math
+
+# clean rule for target.
+CMakeFiles/math.dir/clean:
+	$(MAKE) -f CMakeFiles/math.dir/build.make CMakeFiles/math.dir/clean
+.PHONY : CMakeFiles/math.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/math.dir/clean
+.PHONY : clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/testing.dir
 
 # All Build rule for target.
-CMakeFiles/testing.dir/all:
+CMakeFiles/testing.dir/all: CMakeFiles/math.dir/all
 	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/depend
 	$(MAKE) -f CMakeFiles/testing.dir/build.make CMakeFiles/testing.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/maya/Documents/testing/build/CMakeFiles  1
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/ahmed/Documents/testing/build/CMakeFiles  5 6
 	@echo "Built target testing"
 .PHONY : CMakeFiles/testing.dir/all
 
@@ -69,9 +107,9 @@ all: CMakeFiles/testing.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/testing.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/maya/Documents/testing/build/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ahmed/Documents/testing/build/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/testing.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/maya/Documents/testing/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ahmed/Documents/testing/build/CMakeFiles 0
 .PHONY : CMakeFiles/testing.dir/rule
 
 # Convenience name for target.
