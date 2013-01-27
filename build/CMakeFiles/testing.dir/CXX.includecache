@@ -23,25 +23,11 @@ osg/MatrixTransform
 -
 
 /home/ahmed/Documents/testing/main.cpp
-osg/Geometry
--
-osg/Geode
--
-osg/ShapeDrawable
--
-osgUtil/SmoothingVisitor
+iostream
 -
 osgViewer/Viewer
 -
 osgViewer/ViewerEventHandlers
--
-osgUtil/PrintVisitor
--
-iostream
--
-osg/Group
--
-osg/NodeVisitor
 -
 scene.h
 /home/ahmed/Documents/testing/scene.h

@@ -20,6 +20,16 @@ SET(COMMON_FILES
 )
 
 
+FIND_PACKAGE(Qt)
+IF(QT4_FOUND)
+    SET(EXAMPLE_NAME cookbook_09_01)
+    SET(EXAMPLE_FILES ch09_01/osg_qt.cpp)
+    SET(EXTERNAL_INCLUDE_DIR "${QT_INCLUDE_DIR}")
+    SET(EXTERNAL_LIBRARIES ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY}
+                           "debug;osgQt${CMAKE_DEBUG_POSTFIX};optimized;osgQt")
+ENDIF(QT4_FOUND)
+
+
 # my classes
 add_library(math scene light shader camera)
 
